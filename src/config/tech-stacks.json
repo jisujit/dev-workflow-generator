@@ -1,0 +1,217 @@
+{
+  "react": {
+    "name": "React",
+    "language": "JavaScript",
+    "detection": ["package.json", "react", "react-dom"],
+    "buildTools": ["Vite", "Next.js", "Create React App", "Webpack"],
+    "testingFrameworks": ["Jest", "Vitest", "React Testing Library"],
+    "defaultPort": 5173,
+    "scripts": {
+      "dev": "npm run dev",
+      "build": "npm run build",
+      "test": "npm run test",
+      "install": "npm install"
+    },
+    "files": ["src/", "public/", "package.json", "index.html"],
+    "envFiles": [".env", ".env.local", ".env.development", ".env.production"]
+  },
+  "vue": {
+    "name": "Vue.js",
+    "language": "JavaScript",
+    "detection": ["package.json", "vue"],
+    "buildTools": ["Vite", "Vue CLI", "Nuxt.js"],
+    "testingFrameworks": ["Vitest", "Jest"],
+    "defaultPort": 5173,
+    "scripts": {
+      "dev": "npm run dev",
+      "build": "npm run build",
+      "test": "npm run test"
+    },
+    "files": ["src/", "public/", "package.json"],
+    "envFiles": [".env", ".env.local"]
+  },
+  "angular": {
+    "name": "Angular",
+    "language": "TypeScript",
+    "detection": ["package.json", "@angular/core"],
+    "buildTools": ["Angular CLI"],
+    "testingFrameworks": ["Jasmine", "Karma"],
+    "defaultPort": 4200,
+    "scripts": {
+      "dev": "ng serve",
+      "build": "ng build",
+      "test": "ng test"
+    },
+    "files": ["src/", "angular.json", "package.json"],
+    "envFiles": [".env"]
+  },
+  "nodejs": {
+    "name": "Node.js",
+    "language": "JavaScript",
+    "detection": ["package.json"],
+    "frameworks": ["Express", "Fastify", "Koa", "NestJS"],
+    "testingFrameworks": ["Jest", "Mocha", "Ava"],
+    "defaultPort": 3000,
+    "scripts": {
+      "dev": "npm run dev",
+      "build": "npm run build",
+      "test": "npm run test"
+    },
+    "files": ["src/", "package.json"],
+    "envFiles": [".env", ".env.local"]
+  },
+  "python": {
+    "name": "Python",
+    "language": "Python",
+    "detection": ["requirements.txt", "pyproject.toml", "setup.py"],
+    "frameworks": ["FastAPI", "Flask", "Django"],
+    "testingFrameworks": ["pytest", "unittest"],
+    "defaultPort": 8000,
+    "scripts": {
+      "dev": "python main.py",
+      "test": "pytest",
+      "install": "pip install -r requirements.txt"
+    },
+    "files": ["main.py", "requirements.txt", "src/"],
+    "envFiles": [".env"]
+  },
+  "fastapi": {
+    "name": "FastAPI",
+    "language": "Python",
+    "detection": ["requirements.txt", "fastapi"],
+    "testingFrameworks": ["pytest"],
+    "defaultPort": 8000,
+    "scripts": {
+      "dev": "uvicorn main:app --reload",
+      "test": "pytest"
+    },
+    "files": ["main.py", "requirements.txt"],
+    "envFiles": [".env"]
+  },
+  "flask": {
+    "name": "Flask",
+    "language": "Python",
+    "detection": ["requirements.txt", "flask"],
+    "testingFrameworks": ["pytest", "unittest"],
+    "defaultPort": 5000,
+    "scripts": {
+      "dev": "flask run",
+      "test": "pytest"
+    },
+    "files": ["app.py", "requirements.txt"],
+    "envFiles": [".env"]
+  },
+  "django": {
+    "name": "Django",
+    "language": "Python",
+    "detection": ["requirements.txt", "django", "manage.py"],
+    "testingFrameworks": ["Django Test", "pytest"],
+    "defaultPort": 8000,
+    "scripts": {
+      "dev": "python manage.py runserver",
+      "test": "python manage.py test"
+    },
+    "files": ["manage.py", "requirements.txt"],
+    "envFiles": [".env"]
+  },
+  "go": {
+    "name": "Go",
+    "language": "Go",
+    "detection": ["go.mod"],
+    "testingFrameworks": ["go test"],
+    "defaultPort": 8080,
+    "scripts": {
+      "dev": "go run main.go",
+      "build": "go build",
+      "test": "go test ./..."
+    },
+    "files": ["main.go", "go.mod", "go.sum"],
+    "envFiles": [".env"]
+  },
+  "dotnet": {
+    "name": ".NET",
+    "language": "C#",
+    "detection": ["*.csproj"],
+    "frameworks": ["ASP.NET Core", "Blazor"],
+    "testingFrameworks": ["xUnit", "NUnit", "MSTest"],
+    "defaultPort": 5000,
+    "scripts": {
+      "dev": "dotnet run",
+      "build": "dotnet build",
+      "test": "dotnet test"
+    },
+    "files": ["*.csproj", "Program.cs"],
+    "envFiles": ["appsettings.json", "appsettings.Development.json"]
+  },
+  "java": {
+    "name": "Java",
+    "language": "Java",
+    "detection": ["pom.xml", "build.gradle"],
+    "frameworks": ["Spring Boot", "Micronaut", "Quarkus"],
+    "buildTools": ["Maven", "Gradle"],
+    "testingFrameworks": ["JUnit", "TestNG"],
+    "defaultPort": 8080,
+    "scripts": {
+      "dev": "mvn spring-boot:run",
+      "build": "mvn clean package",
+      "test": "mvn test"
+    },
+    "files": ["pom.xml", "src/"],
+    "envFiles": ["application.properties", ".env"]
+  },
+  "rust": {
+    "name": "Rust",
+    "language": "Rust",
+    "detection": ["Cargo.toml"],
+    "frameworks": ["Actix", "Rocket", "Axum"],
+    "testingFrameworks": ["cargo test"],
+    "defaultPort": 8080,
+    "scripts": {
+      "dev": "cargo run",
+      "build": "cargo build",
+      "test": "cargo test"
+    },
+    "files": ["Cargo.toml", "src/"],
+    "envFiles": [".env"]
+  },
+  "databases": {
+    "postgresql": {
+      "name": "PostgreSQL",
+      "detection": ["DATABASE_URL", "POSTGRES", "postgresql://"],
+      "defaultPort": 5432
+    },
+    "mysql": {
+      "name": "MySQL",
+      "detection": ["MYSQL", "mysql://"],
+      "defaultPort": 3306
+    },
+    "mongodb": {
+      "name": "MongoDB",
+      "detection": ["MONGODB", "mongodb://"],
+      "defaultPort": 27017
+    },
+    "redis": {
+      "name": "Redis",
+      "detection": ["REDIS", "redis://"],
+      "defaultPort": 6379
+    }
+  },
+  "deployment": {
+    "docker": {
+      "name": "Docker",
+      "detection": ["Dockerfile", "docker-compose.yml"]
+    },
+    "vercel": {
+      "name": "Vercel",
+      "detection": ["vercel.json"]
+    },
+    "netlify": {
+      "name": "Netlify",
+      "detection": ["netlify.toml", "_redirects"]
+    },
+    "github-actions": {
+      "name": "GitHub Actions",
+      "detection": [".github/workflows"]
+    }
+  }
+}

@@ -1,0 +1,9 @@
+# src/templates/scripts/startup-dev-session.ps1.template
+# AI Focus App - Development Session Startup Script
+# Generated for: {{PROJECT_NAME}}
+
+Write-Host "=== {{PROJECT_NAME}} - Development Session Startup ===" -ForegroundColor Green
+Write-Host "Tech Stack: {{TECH_STACK}}" -ForegroundColor White
+
+# TODO: Add project-specific startup logic
+Write-Host "🚧 Template in development" -ForegroundColor Yellow
