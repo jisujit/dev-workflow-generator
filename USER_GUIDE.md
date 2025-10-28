@@ -2,9 +2,9 @@
 
 ## What Happens When You Run the Tool
 
-When someone runs `.\Setup-DevWorkflow.ps1 -ProjectPath .`, here's exactly what they see and get:
+When you run `.\Setup-DevWorkflow.ps1 -ProjectPath .`, here's exactly what you'll see and get:
 
-### 1. What They See (Console Output)
+### 1. What You'll See (Console Output)
 
 ```
 ================================================
@@ -62,12 +62,12 @@ Next Steps:
 Would you like to see the quick start guide now? (y/n)
 ```
 
-### 2. What Files They Get
+### 2. What Files You Get
 
-After running the tool, their project will have:
+After running the tool, your project will have:
 
 ```
-their-project/
+your-project/
 ├── .dev-workflow/
 │   ├── startup-dev-session.ps1    # Start coding
 │   ├── session-closeout.ps1       # End session  
@@ -77,7 +77,7 @@ their-project/
 └── IDE_CONTEXT_SUMMARY.md         # AI context
 ```
 
-### 3. How They Use It
+### 3. How You Use It
 
 #### Daily Workflow:
 
@@ -86,9 +86,9 @@ their-project/
 .\.dev-workflow\startup-dev-session.ps1
 ```
 This script:
-- Checks if dependencies are installed
-- Shows project information
-- Provides commands to start dev server
+- Checks if your dependencies are installed
+- Shows your project information
+- Provides commands to start your dev server
 - Displays the development URL
 
 **Check Status:**
@@ -114,12 +114,12 @@ This script:
 #### Quick Reference:
 
 **DEV_STARTUP_CHEATSHEET.md** contains:
-- All the commands they need
+- All the commands you need
 - Project-specific setup instructions
 - Common tasks and shortcuts
 - Environment information
 
-## What Features They Get
+## What Features You Get
 
 ### For React/Node.js Projects:
 - ✅ Automatic dependency checking
@@ -143,46 +143,46 @@ This script:
 - ✅ AI assistant context
 - ✅ Complete documentation
 
-## How They Know What They Have
+## How You Know What You Have
 
 ### 1. Console Output Shows Everything
 The tool clearly displays:
-- What was detected
-- What was generated
-- How to use it
-- Next steps
+- What was detected in your project
+- What was generated for you
+- How you can use it
+- Your next steps
 
 ### 2. Documentation Explains Everything
-- **DEV_STARTUP_CHEATSHEET.md** - Quick reference with all commands
+- **DEV_STARTUP_CHEATSHEET.md** - Quick reference with all your commands
 - **DEVELOPMENT_WORKFLOW_README.md** - Complete guide with examples
-- **IDE_CONTEXT_SUMMARY.md** - Context for AI assistants
+- **IDE_CONTEXT_SUMMARY.md** - Context for your AI assistants
 
 ### 3. Scripts Are Self-Documenting
 Each PowerShell script:
-- Shows what it does when run
-- Provides clear output
-- Explains next steps
-- Shows project information
+- Shows what it does when you run it
+- Provides clear output for you
+- Explains your next steps
+- Shows your project information
 
 ### 4. Interactive Help
-The tool asks:
+The tool asks you:
 - "Would you like to see the quick start guide now? (y/n)"
 - Shows help with `-ShowHelp` flag
 - Provides clear error messages
 
 ## Example User Journey
 
-1. **User runs the tool:**
+1. **You run the tool:**
    ```powershell
    .\Setup-DevWorkflow.ps1 -ProjectPath .
    ```
 
-2. **Tool analyzes their React project and shows:**
+2. **The tool analyzes your React project and shows:**
    - Detected: React with Vite
    - Generated: 3 scripts + 3 docs
    - Features: Auto-setup, dev server, testing
 
-3. **User starts coding:**
+3. **You start coding:**
    ```powershell
    .\.dev-workflow\startup-dev-session.ps1
    ```
@@ -190,12 +190,12 @@ The tool asks:
    - Shows dev server command
    - Displays localhost URL
 
-4. **User keeps DEV_STARTUP_CHEATSHEET.md open:**
-   - Has all commands
-   - Shows project info
-   - Quick reference
+4. **You keep DEV_STARTUP_CHEATSHEET.md open:**
+   - Has all your commands
+   - Shows your project info
+   - Quick reference for you
 
-5. **User ends session:**
+5. **You end your session:**
    ```powershell
    .\.dev-workflow\session-closeout.ps1
    ```
@@ -205,12 +205,12 @@ The tool asks:
 
 ## The Key Insight
 
-**The user doesn't need to learn anything new!** 
+**You don't need to learn anything new!** 
 
 The tool:
-- ✅ **Shows them exactly what they got** (console output)
-- ✅ **Explains how to use it** (documentation)
-- ✅ **Provides quick reference** (cheatsheet)
+- ✅ **Shows you exactly what you got** (console output)
+- ✅ **Explains how you can use it** (documentation)
+- ✅ **Provides quick reference for you** (cheatsheet)
 - ✅ **Makes it obvious** (clear file names and structure)
 
-They just run the tool, get everything they need, and start coding with their existing workflow enhanced!
+You just run the tool, get everything you need, and start coding with your existing workflow enhanced!

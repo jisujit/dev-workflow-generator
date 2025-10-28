@@ -312,7 +312,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Credits
 
-Created by [Your Name]
+Created by Sujit Gangadharan
 
 Inspired by the need for consistent development workflows across diverse tech stacks.
 
