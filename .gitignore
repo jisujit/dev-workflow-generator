@@ -1,0 +1,24 @@
+# PowerShell
+*.ps1.bak
+*.ps1.tmp
+
+# Generated files (if any)
+*.log
+*.tmp
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test outputs
+test-output/
+.dev-workflow/
+DEV_STARTUP_CHEATSHEET.md
+DEVELOPMENT_WORKFLOW_README.md
+IDE_CONTEXT_SUMMARY.md

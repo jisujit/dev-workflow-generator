@@ -21,28 +21,62 @@ A PowerShell-based tool that analyzes any repository, detects the project type, 
 - **session-closeout.ps1** - Clean session transitions
 - **project-status.ps1** - Project health check
 
+## System Requirements
+
+**Operating Systems:**
+- ✅ **Windows** (PowerShell 5.1+ or PowerShell Core 6+)
+- ✅ **macOS** (PowerShell Core 6+)
+- ✅ **Linux** (PowerShell Core 6+)
+
+**PowerShell:**
+- Windows PowerShell 5.1+ (Windows only)
+- PowerShell Core 6+ (Cross-platform)
+
 ## Quick Start
 
 ### Installation
 
 ```powershell
 # Clone the repository
-git clone https://github.com/yourusername/dev-workflow-generator.git
+git clone https://github.com/jisujit/dev-workflow-generator.git
 cd dev-workflow-generator
+```
+
+### Install PowerShell Core (macOS/Linux)
+
+**macOS:**
+```bash
+brew install powershell
+```
+
+**Linux (Ubuntu/Debian):**
+```bash
+# Download and install PowerShell Core
+wget -q https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb
+sudo dpkg -i packages-microsoft-prod.deb
+sudo apt-get update
+sudo apt-get install -y powershell
 ```
 
 ### Usage
 
 Generate a workflow for any project:
 
+**Windows:**
 ```powershell
 # Run from the dev-workflow-generator directory
 .\Setup-DevWorkflow.ps1 -ProjectPath path/to/your/project
 ```
 
-Or from any directory:
+**macOS/Linux:**
+```bash
+# Run with PowerShell Core
+pwsh ./Setup-DevWorkflow.ps1 -ProjectPath path/to/your/project
+```
 
+**Cross-platform:**
 ```powershell
+# From any directory
 path/to/dev-workflow-generator/Setup-DevWorkflow.ps1 -ProjectPath .
 ```
 
@@ -211,9 +245,15 @@ Customize tech stack detection in `src/config/tech-stacks.json`:
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
 ## License
 
-MIT License - see LICENSE file for details
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Credits
 
