@@ -42,6 +42,9 @@
 - Windows PowerShell 5.1+ (Windows only)
 - PowerShell Core 6+ (Cross-platform)
 
+**Prerequisite:**
+- Clone this repo locally: `git clone https://github.com/jisujit/dev-workflow-generator.git`
+
 ## Quick Start
 
 ### Installation
@@ -74,7 +77,7 @@ Generate a workflow for any project:
 
 **Windows:**
 ```powershell
-# Run from the dev-workflow-generator directory
+# Run from the dev-workflow-generator directory (where you cloned https://github.com/jisujit/dev-workflow-generator.git)
 .\Setup-DevWorkflow.ps1 -ProjectPath path/to/your/project
 ```
 

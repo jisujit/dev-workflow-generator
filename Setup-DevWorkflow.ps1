@@ -337,6 +337,19 @@ else {
     Write-Host "⚠️  Context documentation not found. Run Setup-DevWorkflow.ps1 first." -ForegroundColor Yellow
 }
 
+# Optionally open the context doc for convenience (opt-in via DEVWF_OPEN_CONTEXT=1)
+`$shouldOpen = `$env:DEVWF_OPEN_CONTEXT -eq '1'
+`$inCI = `$env:CI -or `$env:GITHUB_ACTIONS
+if (`$shouldOpen -and -not `$inCI -and (Test-Path 'IDE_CONTEXT_SUMMARY.md')) {
+    try {
+        if (`$IsWindows) { Start-Process 'IDE_CONTEXT_SUMMARY.md' }
+        elseif (`$IsMacOS) { & open 'IDE_CONTEXT_SUMMARY.md' }
+        else { & xdg-open 'IDE_CONTEXT_SUMMARY.md' }
+    } catch {
+        Write-Host "Note: couldn't auto-open IDE_CONTEXT_SUMMARY.md" -ForegroundColor Yellow
+    }
+}
+
 Write-Host "`n=== Session Ready ===" -ForegroundColor Green
 Write-Host "Happy coding! 🚀" -ForegroundColor White
 "@
