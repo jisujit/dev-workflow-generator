@@ -36,26 +36,9 @@ pwsh ./Setup-DevWorkflow.ps1 -ProjectPath /Users/you/Projects/my-sample-project
 - Ensures dependencies are ready
 - Confirms context docs exist and are ready for AI assistants
 - Shows dev command and URL (you start the server when ready)
-- Optional: auto-open `IDE_CONTEXT_SUMMARY.md` on startup (set `DEVWF_OPEN_CONTEXT=1`)
+- **Automatically opens** `IDE_CONTEXT_SUMMARY.md` for easy reference (enabled by default)
 
-  Windows (current PowerShell session):
-  ```powershell
-  $env:DEVWF_OPEN_CONTEXT = '1'
-  .\.dev-workflow\startup-dev-session.ps1
-  ```
-
-  Windows (persist for future shells):
-  ```powershell
-  setx DEVWF_OPEN_CONTEXT 1
-  # In the current window (one-time):
-  $env:DEVWF_OPEN_CONTEXT = '1'
-  ```
-
-  macOS/Linux (PowerShell Core):
-  ```powershell
-  $env:DEVWF_OPEN_CONTEXT = '1'
-  pwsh ./.dev-workflow/startup-dev-session.ps1
-  ```
+  Want to disable auto-open? Set `$env:DEVWF_OPEN_CONTEXT = '0'` before running the script.
 
 3) During the session
 - Reference `IDE_CONTEXT_SUMMARY.md` in your AI chat so the agent instantly understands your stack and state

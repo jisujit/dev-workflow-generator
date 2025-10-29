@@ -9,6 +9,18 @@ param(
     [switch]$ShowHelp = $false
 )
 
+# Automatically handle execution policy (no admin required)
+try {
+    $currentPolicy = Get-ExecutionPolicy -Scope Process
+    if ($currentPolicy -eq 'Restricted') {
+        Write-Host "Adjusting execution policy for this session..." -ForegroundColor Yellow
+        Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force | Out-Null
+    }
+} catch {
+    # If we can't check/set, try to continue anyway
+    Write-Host "Note: Execution policy check skipped" -ForegroundColor Gray
+}
+
 if ($ShowHelp) {
     Show-Help
     exit 0
@@ -265,6 +277,16 @@ function Generate-SimpleScripts {
 # Generated for: $($Analysis.ProjectName)
 # Tech Stack: $($Analysis.TechStack)
 
+# Automatically handle execution policy (no admin required)
+try {
+    `$currentPolicy = Get-ExecutionPolicy -Scope Process
+    if (`$currentPolicy -eq 'Restricted') {
+        Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force | Out-Null
+    }
+} catch {
+    # Continue if policy check fails
+}
+
 Write-Host "=== Development Session Startup ===" -ForegroundColor Green
 Write-Host "Project: $($Analysis.ProjectName)" -ForegroundColor White
 Write-Host "Tech Stack: $($Analysis.TechStack)" -ForegroundColor White
@@ -327,6 +349,11 @@ Write-Host "Command: $($Analysis.DevCommand)" -ForegroundColor White
 
     $startupScript += @"
 
+# Set auto-open context by default (can be disabled with DEVWF_OPEN_CONTEXT=0)
+if (-not `$env:DEVWF_OPEN_CONTEXT) {
+    `$env:DEVWF_OPEN_CONTEXT = '1'
+}
+
 # Check context documentation
 Write-Host "`nChecking project context..." -ForegroundColor Cyan
 if (Test-Path "IDE_CONTEXT_SUMMARY.md") {
@@ -337,7 +364,7 @@ else {
     Write-Host "⚠️  Context documentation not found. Run Setup-DevWorkflow.ps1 first." -ForegroundColor Yellow
 }
 
-# Optionally open the context doc for convenience (opt-in via DEVWF_OPEN_CONTEXT=1)
+# Auto-open context doc (enabled by default, disable with DEVWF_OPEN_CONTEXT=0)
 `$shouldOpen = `$env:DEVWF_OPEN_CONTEXT -eq '1'
 `$inCI = `$env:CI -or `$env:GITHUB_ACTIONS
 if (`$shouldOpen -and -not `$inCI -and (Test-Path 'IDE_CONTEXT_SUMMARY.md')) {
@@ -361,6 +388,16 @@ Write-Host "Happy coding! 🚀" -ForegroundColor White
     $closeoutScript = @"
 # Development Session Closeout Script
 # Generated for: $($Analysis.ProjectName)
+
+# Automatically handle execution policy (no admin required)
+try {
+    `$currentPolicy = Get-ExecutionPolicy -Scope Process
+    if (`$currentPolicy -eq 'Restricted') {
+        Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force | Out-Null
+    }
+} catch {
+    # Continue if policy check fails
+}
 
 Write-Host "=== Development Session Closeout ===" -ForegroundColor Cyan
 
@@ -409,6 +446,16 @@ Write-Host "`nGoodbye! 👋" -ForegroundColor Cyan
     $statusScript = @"
 # Project Status Script
 # Generated for: $($Analysis.ProjectName)
+
+# Automatically handle execution policy (no admin required)
+try {
+    `$currentPolicy = Get-ExecutionPolicy -Scope Process
+    if (`$currentPolicy -eq 'Restricted') {
+        Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force | Out-Null
+    }
+} catch {
+    # Continue if policy check fails
+}
 
 Write-Host "=== Project Status ===" -ForegroundColor Cyan
 Write-Host ""

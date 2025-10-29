@@ -47,6 +47,8 @@ Looking for the step-by-step? See the full [User Guide](USER_GUIDE.md).
 **Prerequisite:**
 - Clone this repo locally: `git clone https://github.com/jisujit/dev-workflow-generator.git`
 
+**Note:** Execution policy issues are automatically handled - no admin rights or manual configuration needed! The scripts adjust policy only for the current session (safe and automatic).
+
 ## Quick Start
 
 ### Installation
@@ -95,31 +97,13 @@ pwsh ./Setup-DevWorkflow.ps1 -ProjectPath path/to/your/project
 path/to/dev-workflow-generator/Setup-DevWorkflow.ps1 -ProjectPath .
 ```
 
-#### Optional: Auto-open IDE context on startup
-Have the startup script automatically open `IDE_CONTEXT_SUMMARY.md` when a session begins.
+#### Auto-open IDE context (enabled by default)
+The startup script automatically opens `IDE_CONTEXT_SUMMARY.md` when a session begins, so you can easily reference it in your AI chat.
 
-Windows (current shell only):
-```powershell
-$env:DEVWF_OPEN_CONTEXT = '1'
-.\.dev-workflow\startup-dev-session.ps1
-```
-
-Persist on Windows (future shells):
-```powershell
-setx DEVWF_OPEN_CONTEXT 1
-# In the current window:
-$env:DEVWF_OPEN_CONTEXT = '1'
-```
-
-macOS/Linux (PowerShell Core):
-```powershell
-$env:DEVWF_OPEN_CONTEXT = '1'
-pwsh ./.dev-workflow/startup-dev-session.ps1
-```
-
-Disable any time:
+This is **enabled by default** - no setup needed! If you want to disable it:
 ```powershell
 $env:DEVWF_OPEN_CONTEXT = '0'
+.\.dev-workflow\startup-dev-session.ps1
 ```
 
 ### Options
