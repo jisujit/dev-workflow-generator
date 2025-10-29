@@ -327,6 +327,16 @@ Write-Host "Command: $($Analysis.DevCommand)" -ForegroundColor White
 
     $startupScript += @"
 
+# Check context documentation
+Write-Host "`nChecking project context..." -ForegroundColor Cyan
+if (Test-Path "IDE_CONTEXT_SUMMARY.md") {
+    Write-Host "✅ Context documentation ready" -ForegroundColor Green
+    Write-Host "Tip: Reference IDE_CONTEXT_SUMMARY.md in your AI chat for project context" -ForegroundColor Yellow
+}
+else {
+    Write-Host "⚠️  Context documentation not found. Run Setup-DevWorkflow.ps1 first." -ForegroundColor Yellow
+}
+
 Write-Host "`n=== Session Ready ===" -ForegroundColor Green
 Write-Host "Happy coding! 🚀" -ForegroundColor White
 "@
@@ -358,6 +368,17 @@ if (`$uncommittedChanges) {
 }
 else {
     Write-Host "`n✅ No uncommitted changes" -ForegroundColor Green
+}
+
+# Update context documentation for next session
+Write-Host "`nUpdating project context for next session..." -ForegroundColor Cyan
+`$devWorkflowGeneratorPath = Split-Path `$PSScriptRoot -Parent | Split-Path -Parent | Split-Path -Parent
+if (Test-Path `$devWorkflowGeneratorPath\Setup-DevWorkflow.ps1) {
+    & `$devWorkflowGeneratorPath\Setup-DevWorkflow.ps1 -ProjectPath . -SkipScripts -Force | Out-Null
+    Write-Host "✅ Context updated! Next session will have latest project state." -ForegroundColor Green
+}
+else {
+    Write-Host "⚠️  Could not find Setup-DevWorkflow.ps1" -ForegroundColor Yellow
 }
 
 # Session summary

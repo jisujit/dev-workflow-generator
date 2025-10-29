@@ -41,7 +41,7 @@ Generated: IDE_CONTEXT_SUMMARY.md
 What You Got:
   PowerShell Scripts (.dev-workflow/):
     startup-dev-session.ps1  - Initialize your dev environment
-    session-closeout.ps1     - Clean up when done coding
+    session-closeout.ps1     - Updates context and clean up when done coding
     project-status.ps1        - Check project health
 
   Documentation Files:
@@ -108,6 +108,7 @@ This script:
 This script:
 - Stops running dev servers
 - Shows git status
+- **Updates context documentation** with latest project state
 - Reminds to commit changes
 - Provides session summary
 
@@ -201,6 +202,7 @@ The tool asks you:
    ```
    - Stops servers
    - Shows git status
+   - **Updates context docs** with your latest changes
    - Reminds to commit
 
 ## The Key Insight

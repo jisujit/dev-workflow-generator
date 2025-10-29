@@ -291,6 +291,7 @@ This project uses an automated development workflow system to streamline your de
 #### session-closeout.ps1
 - Stops running development servers
 - Shows git status
+- Updates context documentation with latest project state
 - Reminds you to commit changes
 - Generates session summary
 
@@ -404,7 +405,7 @@ This workflow is optimized for use with modern IDEs and AI-assisted development 
 
 1. **Always start with the startup script** to ensure environment is configured
 2. **Run tests before committing** to catch issues early
-3. **Use the closeout script** to ensure clean session transitions
+3. **Use the closeout script** to update context and ensure clean session transitions
 4. **Keep environment files updated** with new configuration variables
 5. **Commit frequently** with descriptive messages
 
