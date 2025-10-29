@@ -6,7 +6,7 @@
 
 **The Solution:** Dev Workflow Generator creates **persistent development context** that bridges every coding session. Run it once per project, and every AI conversation—whether with ChatGPT, GitHub Copilot, Cursor AI, or any assistant—immediately understands your environment.
 
-**One command. Zero friction. Seamless continuity.**
+**“One-time setup. Two quick scripts per session. Seamless continuity.”**
 
 ## Features
 

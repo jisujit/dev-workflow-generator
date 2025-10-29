@@ -1,4 +1,4 @@
-# PowerShell
+# PowerShell backup files
 *.ps1.bak
 *.ps1.tmp
 
@@ -16,9 +16,30 @@
 .DS_Store
 Thumbs.db
 
-# Test outputs
+# Test outputs and temporary files
 test-output/
 .dev-workflow/
 DEV_STARTUP_CHEATSHEET.md
 DEVELOPMENT_WORKFLOW_README.md
 IDE_CONTEXT_SUMMARY.md
+
+# Marketing/internal documentation (not for end users)
+LINKEDIN_POST.md
+LINKEDIN_POST_SHORT.md
+Demo-UserExperience.ps1
+PROJECT_STATUS.md
+CUSTOMIZATION_OVERVIEW.md
+SUMMARY.md
+GENERIC_WORKFLOW_GENERATOR_PLAN.md
+USER_GUIDE.md
+
+# Test and development scripts (internal use)
+Test-Full-Workflow.ps1
+Test-Workflow.ps1
+REPO_CLEANUP_GUIDE.md
+
+# Generated files in examples (will be regenerated if needed)
+examples/*/DEV_STARTUP_CHEATSHEET.md
+examples/*/DEVELOPMENT_WORKFLOW_README.md
+examples/*/IDE_CONTEXT_SUMMARY.md
+examples/*/.dev-workflow/
