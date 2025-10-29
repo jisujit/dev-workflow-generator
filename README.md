@@ -8,6 +8,8 @@
 
 **“One-time setup. Two quick scripts per session. Seamless continuity.”**
 
+Looking for the step-by-step? See the full [User Guide](USER_GUIDE.md).
+
 ## Features
 
 ### 🔄 **Session Continuity & Context Management**
@@ -91,6 +93,33 @@ pwsh ./Setup-DevWorkflow.ps1 -ProjectPath path/to/your/project
 ```powershell
 # From any directory
 path/to/dev-workflow-generator/Setup-DevWorkflow.ps1 -ProjectPath .
+```
+
+#### Optional: Auto-open IDE context on startup
+Have the startup script automatically open `IDE_CONTEXT_SUMMARY.md` when a session begins.
+
+Windows (current shell only):
+```powershell
+$env:DEVWF_OPEN_CONTEXT = '1'
+.\.dev-workflow\startup-dev-session.ps1
+```
+
+Persist on Windows (future shells):
+```powershell
+setx DEVWF_OPEN_CONTEXT 1
+# In the current window:
+$env:DEVWF_OPEN_CONTEXT = '1'
+```
+
+macOS/Linux (PowerShell Core):
+```powershell
+$env:DEVWF_OPEN_CONTEXT = '1'
+pwsh ./.dev-workflow/startup-dev-session.ps1
+```
+
+Disable any time:
+```powershell
+$env:DEVWF_OPEN_CONTEXT = '0'
 ```
 
 ### Options

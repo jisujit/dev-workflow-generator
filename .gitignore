@@ -31,7 +31,6 @@ PROJECT_STATUS.md
 CUSTOMIZATION_OVERVIEW.md
 SUMMARY.md
 GENERIC_WORKFLOW_GENERATOR_PLAN.md
-USER_GUIDE.md
 
 # Test and development scripts (internal use)
 Test-Full-Workflow.ps1
