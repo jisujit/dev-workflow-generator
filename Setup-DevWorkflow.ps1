@@ -111,45 +111,15 @@ if ($analysis.Deployment) {
 
 Write-Host ""
 
-# Generate scripts (simplified version)
-if (-not $SkipScripts) {
-    Write-Host "Generating development scripts..." -ForegroundColor Cyan
-    Generate-SimpleScripts -Analysis $analysis -OutputPath $workflowDir
-}
+# Defer script generation until functions are defined
+$shouldGenerateScripts = -not $SkipScripts
 
 # Generate documentation
 if (-not $SkipDocs) {
     Generate-Documentation -Analysis $analysis -OutputPath $ProjectPath
 }
 
-# Show what was created
-Write-Host ""
-Write-Host "================================================" -ForegroundColor Green
-Write-Host "   Workflow Setup Complete!                     " -ForegroundColor Green
-Write-Host "================================================" -ForegroundColor Green
-Write-Host ""
-
-Show-FeaturesOverview -Analysis $analysis -ProjectPath $ProjectPath
-
-Write-Host ""
-Write-Host "Next Steps:" -ForegroundColor Cyan
-Write-Host "   1. Review the generated cheatsheet" -ForegroundColor White
-Write-Host "   2. Run: .\.dev-workflow\startup-dev-session.ps1" -ForegroundColor White
-Write-Host "   3. Start coding!" -ForegroundColor White
-Write-Host ""
-
-# Ask if user wants to see the cheatsheet
-$showCheatsheet = Read-Host "Would you like to see the quick start guide now? (y/n)"
-if ($showCheatsheet -eq 'y') {
-    Show-QuickStartGuide -Analysis $analysis
-}
-
-Write-Host ""
-Write-Host "Tip: Keep DEV_STARTUP_CHEATSHEET.md open in your editor!" -ForegroundColor Yellow
-Write-Host ""
-
-# Return analysis for further processing if needed
-return $analysis
+# Defer summary until after functions are defined
 
 function Show-Help {
     Write-Host ""
@@ -176,7 +146,7 @@ function Show-Help {
 }
 
 function Show-FeaturesOverview {
-    param([hashtable]$Analysis, [string]$ProjectPath)
+    param([hashtable]$Analysis, [string]$ProjectPath, [switch]$SkipScripts, [switch]$SkipDocs)
     
     Write-Host "What You Got:" -ForegroundColor Cyan
     
@@ -184,7 +154,7 @@ function Show-FeaturesOverview {
         Write-Host ""
         Write-Host "  PowerShell Scripts (.dev-workflow/):" -ForegroundColor Green
         Write-Host "    startup-dev-session.ps1  - Initialize your dev environment" -ForegroundColor White
-        Write-Host "    session-closeout.ps1     - Clean up when done coding" -ForegroundColor White
+        Write-Host "    session-closeout.ps1     - Updates context and clean up when done coding" -ForegroundColor White
         Write-Host "    project-status.ps1        - Check project health" -ForegroundColor White
     }
     
@@ -368,12 +338,48 @@ else {
 `$shouldOpen = `$env:DEVWF_OPEN_CONTEXT -eq '1'
 `$inCI = `$env:CI -or `$env:GITHUB_ACTIONS
 if (`$shouldOpen -and -not `$inCI -and (Test-Path 'IDE_CONTEXT_SUMMARY.md')) {
-    try {
-        if (`$IsWindows) { Start-Process 'IDE_CONTEXT_SUMMARY.md' }
-        elseif (`$IsMacOS) { & open 'IDE_CONTEXT_SUMMARY.md' }
-        else { & xdg-open 'IDE_CONTEXT_SUMMARY.md' }
-    } catch {
+    `$contextPath = Resolve-Path 'IDE_CONTEXT_SUMMARY.md' -ErrorAction SilentlyContinue
+    if (`$null -ne `$contextPath) {
+        try {
+            if (`$env:OS -eq 'Windows_NT') {
+                Start-Process -FilePath `$contextPath
+            }
+            elseif (Get-Command open -ErrorAction SilentlyContinue) {
+                & open `$contextPath
+            }
+            elseif (Get-Command xdg-open -ErrorAction SilentlyContinue) {
+                & xdg-open `$contextPath
+            }
+            else {
+                Write-Host "Note: couldn't find a suitable opener for IDE_CONTEXT_SUMMARY.md" -ForegroundColor Yellow
+            }
+        } catch {
+            try {
+                Invoke-Item `$contextPath
+            } catch {
+                Write-Host "Note: couldn't auto-open IDE_CONTEXT_SUMMARY.md" -ForegroundColor Yellow
+            }
+        }
+    } else {
         Write-Host "Note: couldn't auto-open IDE_CONTEXT_SUMMARY.md" -ForegroundColor Yellow
+    }
+}
+
+# Show simple manual steps
+Write-Host "`n📋 Quick Start:" -ForegroundColor Cyan
+Write-Host "  1) Open IDE_CONTEXT_SUMMARY.md (for AI context)" -ForegroundColor White
+Write-Host "  2) Start dev server: $($Analysis.DevCommand)" -ForegroundColor Yellow
+Write-Host "  3) Open: http://localhost:$($Analysis.Port)" -ForegroundColor Yellow
+Write-Host ""
+
+# Auto-start dev server (can be disabled with DEVWF_AUTOSTART=0)
+`$autoStart = if (`$env:DEVWF_AUTOSTART) { `$env:DEVWF_AUTOSTART } else { '1' }
+if (`$autoStart -eq '1') {
+    Write-Host "🚀 Auto-starting dev server..." -ForegroundColor Green
+    try {
+        Invoke-Expression "$($Analysis.DevCommand)"
+    } catch {
+        Write-Host "⚠️  Auto-start failed. Run manually: $($Analysis.DevCommand)" -ForegroundColor Yellow
     }
 }
 
@@ -385,6 +391,7 @@ Write-Host "Happy coding! 🚀" -ForegroundColor White
     Write-Host "Generated: startup-dev-session.ps1" -ForegroundColor Green
     
     # Generate closeout script
+    $projectNameValue = $Analysis.ProjectName
     $closeoutScript = @"
 # Development Session Closeout Script
 # Generated for: $($Analysis.ProjectName)
@@ -420,24 +427,132 @@ else {
     Write-Host "`n✅ No uncommitted changes" -ForegroundColor Green
 }
 
-# Update context documentation for next session
-Write-Host "`nUpdating project context for next session..." -ForegroundColor Cyan
-`$devWorkflowGeneratorPath = Split-Path `$PSScriptRoot -Parent | Split-Path -Parent | Split-Path -Parent
-if (Test-Path `$devWorkflowGeneratorPath\Setup-DevWorkflow.ps1) {
-    & `$devWorkflowGeneratorPath\Setup-DevWorkflow.ps1 -ProjectPath . -SkipScripts -Force | Out-Null
-    Write-Host "✅ Context updated! Next session will have latest project state." -ForegroundColor Green
+# Update context documentation for next session (KEY FEATURE)
+Write-Host "`n🔄 Updating IDE_CONTEXT_SUMMARY.md with session context..." -ForegroundColor Cyan
+
+# Capture session information
+`$sessionDate = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
+`$changedFiles = git diff --name-only
+`$changedFilesStaged = git diff --cached --name-only
+`$modifiedFiles = git ls-files -m
+`$recentCommits = git log --oneline -5
+`$gitStatusShort = git status --short
+
+# Get git diff summary (brief)
+`$diffSummary = ""
+if (`$changedFiles -or `$changedFilesStaged -or `$modifiedFiles) {
+    `$allChanged = (@(`$changedFiles) + @(`$changedFilesStaged) + @(`$modifiedFiles)) | Select-Object -Unique | Where-Object { `$_ }
+    if (`$allChanged) {
+        `$diffSummary = "Modified files: " + (`$allChanged -join ", ")
+    }
 }
-else {
-    Write-Host "⚠️  Could not find Setup-DevWorkflow.ps1" -ForegroundColor Yellow
+
+# Prompt user for session notes
+Write-Host "`n📝 What did you work on in this session?" -ForegroundColor Yellow
+Write-Host "   (Quick notes: features added, bugs fixed, what you're working on next)" -ForegroundColor Gray
+`$userNotes = Read-Host "   Notes (press Enter to skip)"
+
+# Build session context
+`$nl = [Environment]::NewLine
+`$sessionContext = ''
+`$sessionContext += '### Session: ' + `$sessionDate + `$nl + `$nl
+`$sessionContext += '#### Files Changed:' + `$nl
+
+if (`$gitStatusShort) {
+    `$sessionContext += `$nl + ((`$gitStatusShort -split `$nl | ForEach-Object { '- ' + `$_ }) -join `$nl)
+} else {
+    `$sessionContext += `$nl + '- No changes detected'
+}
+
+`$sessionContext += `$nl + `$nl + '#### Recent Commits:' + `$nl
+
+if (`$recentCommits) {
+    `$sessionContext += `$nl + ((`$recentCommits -split `$nl | Select-Object -First 3 | ForEach-Object { '- ' + `$_ }) -join `$nl)
+} else {
+    `$sessionContext += `$nl + '- No recent commits'
+}
+
+if (`$userNotes) {
+    `$trimmedNotes = (`$userNotes).Trim()
+    if (`$trimmedNotes) {
+        `$sessionContext += `$nl + `$nl + `$nl + '#### Session Notes:' + `$nl + '> ' + `$trimmedNotes
+    }
+}
+
+`$sessionContext += `$nl + `$nl + '---' + `$nl
+
+# Update IDE_CONTEXT_SUMMARY.md
+`$contextPath = 'IDE_CONTEXT_SUMMARY.md'
+if (Test-Path `$contextPath) {
+    `$content = Get-Content `$contextPath -Raw
+    
+    # Find and replace the Recent Session Context section
+    `$sectionHeader = '## Recent Session Context'
+    
+    `$pattern = '*' + `$sectionHeader + '*'
+    if (`$content -like `$pattern) {
+        # Split content into lines to find section
+        `$lines = `$content -split `$nl
+        `$startLineIndex = -1
+        `$endLineIndex = -1
+        
+        for (`$i = 0; `$i -lt `$lines.Count; `$i++) {
+            if (`$lines[`$i] -match "^## Recent Session Context") {
+                `$startLineIndex = `$i
+            }
+            elseif (`$startLineIndex -ge 0 -and `$lines[`$i] -match "^## " -and `$lines[`$i] -notmatch "^## Recent Session Context") {
+                `$endLineIndex = `$i
+                break
+            }
+        }
+        
+        if (`$startLineIndex -ge 0) {
+            # Build new section
+            `$headerText = '## Recent Session Context'
+            `$descText = '*This section is automatically updated when you run session-closeout.ps1 to maintain continuity between AI chat sessions.*'
+            `$newSection = `$headerText + `$nl + `$nl + `$descText + `$nl + `$nl + `$sessionContext
+            
+            if (`$endLineIndex -gt `$startLineIndex) {
+                # Replace section between lines
+                `$beforeLines = `$lines[0..(`$startLineIndex - 1)] -join `$nl
+                `$afterLines = `$lines[`$endLineIndex..(`$lines.Count - 1)] -join `$nl
+                `$content = `$beforeLines + `$nl + `$newSection + `$nl + `$afterLines
+            } else {
+                # Replace from start line to end of file
+                `$beforeLines = `$lines[0..(`$startLineIndex - 1)] -join `$nl
+                `$content = `$beforeLines + `$nl + `$newSection
+            }
+        } else {
+            # Append if section marker found but couldn't process
+            `$content += `$nl + `$nl + `$sessionContext
+        }
+    } else {
+        # Append if section doesn't exist
+        `$headerText = '## Recent Session Context'
+        `$descText = '*This section is automatically updated when you run session-closeout.ps1 to maintain continuity between AI chat sessions.*'
+        `$newSection = `$headerText + `$nl + `$nl + `$descText + `$nl + `$nl + `$sessionContext
+        `$content += `$nl + `$nl + `$newSection
+    }
+    
+    Set-Content -Path `$contextPath -Value `$content -Encoding UTF8
+    Write-Host 'Session context saved to IDE_CONTEXT_SUMMARY.md' -ForegroundColor Green
+    Write-Host '   Next AI chat will have full context of this session!' -ForegroundColor Green
+} else {
+    Write-Host 'IDE_CONTEXT_SUMMARY.md not found. Run Setup-DevWorkflow.ps1 first.' -ForegroundColor Yellow
 }
 
 # Session summary
-Write-Host "`n=== Session Summary ===" -ForegroundColor Green
-Write-Host "Project: $($Analysis.ProjectName)" -ForegroundColor White
-Write-Host "Session closed at: `$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')" -ForegroundColor White
-
-Write-Host "`nGoodbye! 👋" -ForegroundColor Cyan
+Write-Host ''
+Write-Host '=== Session Summary ===' -ForegroundColor Green
+Write-Host 'Project: PROJECT_NAME_PLACEHOLDER' -ForegroundColor White
+`$closeoutTime = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
+Write-Host 'Session closed at:' -NoNewline -ForegroundColor White
+Write-Host `$closeoutTime -ForegroundColor White
+Write-Host ''
+Write-Host 'Goodbye!' -ForegroundColor Cyan
 "@
+    # Replace placeholders
+    $closeoutScript = $closeoutScript -replace 'PROJECT_NAME_PLACEHOLDER', $Analysis.ProjectName
 
     Set-Content -Path (Join-Path $OutputPath "session-closeout.ps1") -Value $closeoutScript -Encoding UTF8
     Write-Host "Generated: session-closeout.ps1" -ForegroundColor Green
@@ -478,3 +593,38 @@ Write-Host "`n=== End of Status ===" -ForegroundColor Cyan
     Set-Content -Path (Join-Path $OutputPath "project-status.ps1") -Value $statusScript -Encoding UTF8
     Write-Host "Generated: project-status.ps1" -ForegroundColor Green
 }
+
+# Execute deferred steps now that functions are defined
+if ($shouldGenerateScripts) {
+    Write-Host "Generating development scripts..." -ForegroundColor Cyan
+    Generate-SimpleScripts -Analysis $analysis -OutputPath $workflowDir
+}
+
+# Show what was created
+Write-Host ""
+Write-Host "================================================" -ForegroundColor Green
+Write-Host "   Workflow Setup Complete!                     " -ForegroundColor Green
+Write-Host "================================================" -ForegroundColor Green
+Write-Host ""
+
+Show-FeaturesOverview -Analysis $analysis -ProjectPath $ProjectPath -SkipScripts:$SkipScripts -SkipDocs:$SkipDocs
+
+Write-Host ""
+Write-Host "Next Steps:" -ForegroundColor Cyan
+Write-Host "   1. Review the generated cheatsheet" -ForegroundColor White
+Write-Host "   2. Run: .\.dev-workflow\startup-dev-session.ps1" -ForegroundColor White
+Write-Host "   3. Start coding!" -ForegroundColor White
+Write-Host ""
+
+# Ask if user wants to see the cheatsheet
+$showCheatsheet = Read-Host "Would you like to see the quick start guide now? (y/n)"
+if ($showCheatsheet -eq 'y') {
+    Show-QuickStartGuide -Analysis $analysis
+}
+
+Write-Host ""
+Write-Host "Tip: Keep DEV_STARTUP_CHEATSHEET.md open in your editor!" -ForegroundColor Yellow
+Write-Host ""
+
+# Return analysis for further processing if needed
+return $analysis

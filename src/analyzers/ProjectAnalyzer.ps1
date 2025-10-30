@@ -17,6 +17,24 @@ function Analyze-Project {
         $analysis.TechStack = "Node.js"
         $analysis.Language = "JavaScript"
         $analysis.DevCommand = "npm run dev"
+
+        try {
+            $pkg = Get-Content -Raw -Path (Join-Path $Path 'package.json') | ConvertFrom-Json
+            if ($pkg.name) { $analysis.ProjectName = [string]$pkg.name }
+
+            $depNames = @()
+            if ($pkg.dependencies) { $depNames += @($pkg.dependencies.PSObject.Properties.Name) }
+            if ($pkg.devDependencies) { $depNames += @($pkg.devDependencies.PSObject.Properties.Name) }
+
+            $hasReact = ($depNames -contains 'react') -or ($depNames -contains '@vitejs/plugin-react')
+            $hasVite = ($depNames -contains 'vite') -or ($pkg.scripts -and $pkg.scripts.dev -match 'vite')
+
+            if ($hasReact -and $hasVite) { $analysis.Framework = 'React + Vite'; $analysis.Port = '5173' }
+            elseif ($hasReact) { $analysis.Framework = 'React' }
+            elseif ($hasVite) { $analysis.Framework = 'Vite'; $analysis.Port = '5173' }
+        } catch {
+            # ignore parse errors; keep simple defaults
+        }
     }
     elseif (Test-Path "$Path/requirements.txt") {
         $analysis.TechStack = "Python"

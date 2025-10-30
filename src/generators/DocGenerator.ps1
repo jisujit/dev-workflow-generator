@@ -1,6 +1,6 @@
 # DocGenerator.ps1 - Generates development workflow documentation
 
-. "$PSScriptRoot/TemplateEngine.ps1"
+. (Join-Path $PSScriptRoot "TemplateEngine.ps1")
 
 function Generate-Documentation {
     param(
@@ -595,6 +595,14 @@ $(if ($Analysis.TechStack -match "Node|React|Vue|Angular") {
 
 **For AI Assistants:**  
 This project uses $($Analysis.TechStack) with $($Analysis.Language). When providing code suggestions, follow the conventions and patterns typical for this stack. The development server runs on port $($Analysis.Port) and uses $($Analysis.DevCommand) for local development.
+
+---
+
+## Recent Session Context
+
+*This section is automatically updated when you run `session-closeout.ps1` to maintain continuity between AI chat sessions.*
+
+*No recent session data yet. Run `session-closeout.ps1` to capture your work context for the next session.*
 "@
 
     Set-Content -Path $OutputPath -Value $content -Encoding UTF8
